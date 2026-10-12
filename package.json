@@ -1,0 +1,16 @@
+{
+  "name": "video-overlay",
+  "version": "1.0.0",
+  "description": "奇想盒 - 视频小窗（独立版）",
+  "main": "main/index.mjs",
+  "author": {
+    "name": "nikkigallery"
+  },
+  "scripts": {
+    "start": "electron .",
+    "create-shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create-shortcut.ps1"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0"
+  }
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';" />
+  <title>视频小窗 - 设置</title>
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>视频小窗</h1>
+        <p>如需让视频占满小窗，请使用"网页全屏"功能，而不是"进入全屏"功能</p>
+      </div>
+      <div class="actions">
+        <button id="btn-open" class="btn btn-primary" disabled>打开小窗</button>
+        <button id="btn-close" class="btn btn-outline" disabled>关闭小窗</button>
+      </div>
+    </header>
+
+    <section class="settings">
+      <div class="row">
+        <label for="opacity">小窗透明度</label>
+        <input type="range" id="opacity" min="20" max="100" step="1" value="100" />
+        <span id="opacity-val" class="opacity-val">100%</span>
+      </div>
+      <div class="keybind-row toggle-row">
+        <div>
+          <span>自动记忆播放进度</span>
+          <p class="desc">再次打开小窗时，自动续播上次观看的分P与时间</p>
+        </div>
+        <input type="checkbox" id="remember-progress" class="toggle" />
+      </div>
+      <div class="keybind-row clear-row">
+        <div>
+          <span>进度记录</span>
+          <p class="desc">清除所有已记忆的播放进度</p>
+        </div>
+        <button type="button" class="clear-btn" id="btn-clear-progress">清除</button>
+      </div>
+      <div class="keybind-group">
+        <div class="keybind-row">
+          <span>播放 / 暂停 快捷键</span>
+          <button type="button" class="keybtn" id="key-play-pause">f8</button>
+        </div>
+        <div class="keybind-row">
+          <span>快进 快捷键</span>
+          <button type="button" class="keybtn" id="key-forward">f9</button>
+        </div>
+        <div class="keybind-row">
+          <span>快退 快捷键</span>
+          <button type="button" class="keybtn" id="key-backward">f7</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="hint">快捷键为全局生效，即使小窗不在前台也能控制视频播放</p>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

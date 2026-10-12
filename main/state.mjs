@@ -14,6 +14,10 @@ export const DEFAULT_STATE = {
 
 export const MAX_URL_HISTORY = 20;
 
+// 内存缓存：进程内所有读写先走缓存，避免每次调用都同步读盘
+let cachedRawState = null;
+let cacheInitialized = false;
+
 function getStateFilePath() {
   return path.join(app.getPath("userData"), "video-overlay-state.json");
 }
@@ -45,18 +49,26 @@ export function normalizeUrlHistory(value) {
   return value.filter((item) => typeof item === "string" && /^https?:\/\//i.test(item)).slice(0, MAX_URL_HISTORY);
 }
 
-export function readStateFile() {
+function loadCachedRaw() {
+  if (cacheInitialized) return cachedRawState;
+  cacheInitialized = true;
   try {
     const raw = fs.readFileSync(getStateFilePath(), "utf8");
     const value = JSON.parse(raw);
-    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-    return value;
+    cachedRawState = value && typeof value === "object" && !Array.isArray(value) ? value : null;
   } catch {
-    return null;
+    cachedRawState = null;
   }
+  return cachedRawState;
+}
+
+export function readStateFile() {
+  return loadCachedRaw();
 }
 
 export function writeStateFile(state) {
+  cachedRawState = state;
+  cacheInitialized = true;
   try {
     fs.writeFileSync(getStateFilePath(), JSON.stringify(state, null, 2), "utf8");
   } catch (err) {

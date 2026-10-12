@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!--
+      https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+
+      If you want restrict the sources from where you can load resources:
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'" />
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' *; script-src 'self' *; style-src 'self' 'unsafe-inline' *; img-src 'self' data: file: *;"
+    />
+    <script type="module" crossorigin src="./assets/index-LZVP1X3c.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-_hdz9KTg.css">
+  </head>
+
+  <body>
+    <app></app>
+  </body>
+</html>

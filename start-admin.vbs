@@ -1,2 +1,4 @@
+Set fso = CreateObject("Scripting.FileSystemObject")
+appDir = fso.GetParentFolderName(WScript.ScriptFullName)
 Set UAC = CreateObject("Shell.Application")
-UAC.ShellExecute "D:\video-overlay\start.bat", "", "", "runas", 1
+UAC.ShellExecute appDir & "\start.bat", "", "", "runas", 1

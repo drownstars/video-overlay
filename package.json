@@ -2,6 +2,11 @@
   "name": "video-overlay",
   "version": "1.0.0",
   "description": "奇想盒 - 视频小窗（独立版）",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drownstars/video-overlay.git"
+  },
   "main": "main/index.mjs",
   "author": {
     "name": "nikkigallery"

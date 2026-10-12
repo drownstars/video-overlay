@@ -1,3 +1,3 @@
 @echo off
-cd /d "D:\nuann\video-overlay"
+cd /d "%~dp0"
 npx electron .

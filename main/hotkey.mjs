@@ -33,11 +33,15 @@ function startHook() {
   console.log(`[video-overlay] 启动 PowerShell 钩子: ${keys.join(", ")}`);
 
   psProcess = spawn("powershell", [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
     "-ExecutionPolicy", "Bypass",
     "-File", scriptPath,
     ...keys,
   ], {
     stdio: ["ignore", "pipe", "pipe"],
+    windowsHide: true,
   });
 
   stdoutBuffer = "";

@@ -27,6 +27,8 @@ public class HotkeyHelper
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
+    private const int WM_KEYUP = 0x0101;
+    private const int WM_SYSKEYUP = 0x0105;
 
     private delegate IntPtr LowLevelKeyboardProc(int nCode, uint wParam, IntPtr lParam);
 
@@ -59,6 +61,8 @@ public class HotkeyHelper
 
     private static IntPtr _hookHandle = IntPtr.Zero;
     private static Dictionary<uint, string> _keyMap = new Dictionary<uint, string>();
+    private static Dictionary<uint, uint> _keyMods = new Dictionary<uint, uint>();
+    private static HashSet<uint> _suppressedKeys = new HashSet<uint>();
     private static uint _modState = 0;
 
     private static uint VkFromName(string name)
@@ -101,7 +105,11 @@ public class HotkeyHelper
         {
             KBDLLHOOKSTRUCT ks = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
             bool isDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
+            bool isUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
             uint vk = ks.vkCode;
+
+            if (isUp && _suppressedKeys.Remove(vk))
+                return (IntPtr)1;
 
             // Track modifier state
             if (vk == 0x10 || vk == 0xA0 || vk == 0xA1)
@@ -124,19 +132,14 @@ public class HotkeyHelper
             if (isDown && _keyMap.ContainsKey(vk))
             {
                 string name = _keyMap[vk];
-                uint expectedMods = 0;
-                foreach (var kv in _keyMap)
-                {
-                    if (kv.Value == name)
-                    {
-                        expectedMods = (kv.Key >> 16) & 0xF;
-                        break;
-                    }
-                }
+                uint expectedMods = _keyMods[vk];
                 if (_modState == expectedMods)
                 {
                     Console.WriteLine("KEY:" + name);
                     Console.Out.Flush();
+                    // Swallow both key-down and key-up so the foreground app sees neither.
+                    _suppressedKeys.Add(vk);
+                    return (IntPtr)1;
                 }
             }
         }
@@ -152,6 +155,7 @@ public class HotkeyHelper
             if (vk != 0)
             {
                 _keyMap[vk] = key;
+                _keyMods[vk] = (vkMods >> 16) & 0xF;
                 Console.Error.WriteLine("Registered: " + key + " (VK=0x" + vk.ToString("X") + ")");
             }
         }

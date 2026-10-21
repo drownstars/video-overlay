@@ -6,6 +6,9 @@ dist/
 out/
 build/
 
+# Internal planning notes
+docs/superpowers/
+
 # Logs
 *.log
 npm-debug.log*

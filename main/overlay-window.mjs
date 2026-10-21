@@ -1,4 +1,4 @@
-import { BrowserWindow, globalShortcut, screen } from "electron";
+import { app, BrowserWindow, globalShortcut, screen } from "electron";
 import * as path from "node:path";
 import {
   DISPLAY_NAME,
@@ -80,6 +80,7 @@ export function destroyOverlayWindow(win) {
   setVideoOverlayState({ visible: false });
   broadcastState();
   target.destroy();
+  app.quit();
 }
 
 export function executePlaybackCommand(command) {
@@ -199,9 +200,11 @@ async function createOverlayWindow() {
     setVideoOverlayState({ visible: false });
     broadcastState();
   });
-  window.on("close", (event) => {
-    event.preventDefault();
-    destroyOverlayWindow(window);
+  window.on("close", () => {
+    saveOverlayState("close", window);
+    setVideoOverlayState({ visible: false });
+    broadcastState();
+    app.quit();
   });
   window.on("closed", () => {
     if (saveTimer) {

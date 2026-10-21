@@ -125,6 +125,7 @@ Object.entries(keyButtons).forEach(([keyName, button]) => {
 
 opacityInput.addEventListener("input", () => {
   opacityVal.textContent = `${opacityInput.value}%`;
+  App.previewOpacity(Number(opacityInput.value) / 100);
 });
 opacityInput.addEventListener("change", () => {
   App.setState({ opacity: Number(opacityInput.value) / 100 });

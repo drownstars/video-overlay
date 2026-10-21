@@ -12,6 +12,7 @@ import {
   showOverlayWindow
 } from "./overlay-window.mjs";
 import { clearNoNextPart, clearProgressEntries, getProgressMap, pushUrlHistory } from "./progress.mjs";
+import { showSettingsWindow } from "./settings-window.mjs";
 import { getVideoOverlayState, setVideoOverlayState } from "./state.mjs";
 
 export function registerIpc() {
@@ -68,6 +69,10 @@ export function registerIpc() {
     destroyOverlayWindow();
   });
 
+  ipcMain.handle("video-overlay:open-settings", () => {
+    showSettingsWindow();
+  });
+
   ipcMain.handle("video-overlay:get-state", () => {
     return getVideoOverlayState();
   });
@@ -91,6 +96,12 @@ export function registerIpc() {
     }
     broadcastState();
     return getVideoOverlayState();
+  });
+
+  ipcMain.on("video-overlay:preview-opacity", (_event, opacity) => {
+    const value = Number(opacity);
+    if (!Number.isFinite(value)) return;
+    getOverlayWindow()?.setOpacity(Math.min(1, Math.max(0.2, value)));
   });
 
   ipcMain.handle("video-overlay:navigate", (_event, url) => {

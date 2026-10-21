@@ -70145,6 +70145,21 @@ function VideoOverlayScreen() {
                 variant: "ghost",
                 size: "icon-sm",
                 className: "rounded-lg text-white/80 hover:bg-white/10 hover:text-white",
+                onClick: () => {
+                  void window.App.videoOverlay?.openSettings();
+                },
+                title: "基础设置",
+                "aria-label": "基础设置",
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "size-4" })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                type: "button",
+                variant: "ghost",
+                size: "icon-sm",
+                className: "rounded-lg text-white/80 hover:bg-white/10 hover:text-white",
                 onClick: handleClose,
                 children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "size-4" })
               }

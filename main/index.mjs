@@ -10,7 +10,6 @@ import {
   unregisterPlaybackShortcuts
 } from "./overlay-window.mjs";
 import { showSettingsWindow } from "./settings-window.mjs";
-import { createTray, destroyTray } from "./tray.mjs";
 
 const IS_WINDOWS = process.platform === "win32";
 if (IS_WINDOWS) {
@@ -26,7 +25,6 @@ app.requestSingleInstanceLock()
       app.whenReady().then(async () => {
         await initHotkey();
         registerIpc();
-        createTray();
 
         app.on("web-contents-created", (event, wc) => {
           if (wc.getType() === "webview") {
@@ -40,9 +38,7 @@ app.requestSingleInstanceLock()
           }
         });
 
-        app.on("window-all-closed", () => {
-          // 常驻托盘，仅通过托盘菜单退出
-        });
+        app.on("window-all-closed", () => app.quit());
 
         if (process.argv.includes("--open-settings")) {
           showSettingsWindow();
@@ -63,7 +59,6 @@ app.requestSingleInstanceLock()
         saveOverlayState("before-quit");
         unregisterPlaybackShortcuts();
         unregisterAllHotkeys();
-        destroyTray();
       });
     })()
   : app.quit();

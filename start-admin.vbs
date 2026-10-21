@@ -16,4 +16,4 @@ End If
 
 Set shell = CreateObject("Shell.Application")
 arguments = "/d /c " & Chr(34) & Chr(34) & batPath & Chr(34) & Chr(34)
-shell.ShellExecute cmdPath, arguments, appDir, "runas", 1
+shell.ShellExecute cmdPath, arguments, appDir, "runas", 0

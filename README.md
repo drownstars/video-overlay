@@ -19,10 +19,10 @@ npm start
 Windows 用户也可以使用：
 
 - `start.bat`：直接启动，不请求管理员权限。
-- `start-admin.vbs`：以管理员权限启动，并保留命令行窗口以显示启动状态和错误。
+- `start-admin.vbs`：以管理员权限在后台启动，不显示命令行窗口。
 - `npm run create-shortcut`：在桌面创建“视频小窗”快捷方式；项目移动后重新运行即可更新路径。
 
-`start.bat` 会优先直接运行本地 Electron；首次运行或依赖缺失时会通过 npm 安装项目依赖。启动脚本会切换到 UTF-8 代码页，并在 Electron 异常退出时显示错误码。
+`start.bat` 会优先运行本地 Electron，并立即关闭命令行窗口；首次运行或依赖缺失时会通过 npm 安装项目依赖。桌面快捷方式通过隐藏窗口的管理员启动脚本运行。
 
 ## 功能
 
@@ -30,7 +30,8 @@ Windows 用户也可以使用：
 - **全局控制**：窗口不在前台时也能播放/暂停、快进和快退。
 - **快捷键独占**：Windows 低层键盘钩子会吞掉命中的按下和释放事件，前台软件不会重复响应。
 - **断点续播**：按视频和分 P 保存播放时间，重新打开时自动恢复；接近片尾会从头开始。
-- **托盘常驻**：关闭小窗后程序仍驻留系统托盘，可再次唤出或打开设置。
+- **关闭即退出**：关闭小窗后程序退出，并释放全局快捷键。
+- **基础设置**：从小窗标题栏进入，可调整透明度、续播选项和全局快捷键，也可清除播放进度。
 - **状态记忆**：保存窗口位置、大小、透明度、当前 URL 和 URL 历史。
 
 ## 快捷键
@@ -66,7 +67,6 @@ video-overlay/
 │   ├── hotkey.mjs             # 全局快捷键（Windows 低层钩子 / 回退 globalShortcut）
 │   ├── overlay-window.mjs     # 覆盖小窗：创建、显示、销毁和边界保存
 │   ├── settings-window.mjs    # 设置窗口
-│   ├── tray.mjs               # 系统托盘
 │   └── ipc.mjs                # ipcMain 通道注册
 ├── preload/index.js           # contextBridge 暴露 window.App API
 ├── renderer/                  # 小窗页面的预构建产物
@@ -74,7 +74,7 @@ video-overlay/
 ├── scripts/
 │   ├── create-shortcut.ps1    # 创建桌面快捷方式
 │   └── hotkey-helper.ps1      # C# P/Invoke 低层键盘钩子宿主
-├── resources/icon.ico         # 托盘与快捷方式图标
+├── resources/icon.ico         # 快捷方式图标
 ├── start.bat                  # 直接启动
 ├── start-admin.vbs            # 管理员启动
 ```
@@ -84,7 +84,6 @@ video-overlay/
 ```text
 index.mjs ──► overlay-window.mjs ──► (guest / hotkey / progress / state)
     │  └──► ipc.mjs ──► (overlay-window / guest / progress / state)
-    └──► tray.mjs ──► (overlay-window / settings-window)
     └──► settings-window.mjs
 state.mjs ◄── progress.mjs ◄── guest.mjs
 ```
@@ -110,11 +109,11 @@ git diff --check
 
 ### 中文日志乱码
 
-优先使用 `start.bat` 或 `start-admin.vbs` 启动。脚本会设置 UTF-8 代码页；直接在旧版命令提示符中运行 Node 时，中文显示仍可能受终端代码页影响。
+使用桌面快捷方式或 `start-admin.vbs` 启动时不会显示命令行窗口。直接从终端运行 `npm start` 时，日志会输出到当前终端。
 
 ### 快捷键没有生效
 
-确认设置窗口中的按键没有重复，且应用进程仍在运行。Windows 低层钩子需要在启动时成功安装；可查看控制台中的 `Hook installed` 日志。
+确认设置窗口中的按键没有重复。Windows 低层钩子需要在启动时成功安装；排查时可从终端运行 `npm start` 查看日志。
 
 ### 视频进度没有恢复
 

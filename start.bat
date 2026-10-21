@@ -24,10 +24,5 @@ if not exist "%ELECTRON%" (
   exit /b 1
 )
 
-"%ELECTRON%" "%APP_DIR%"
-set "APP_EXIT_CODE=%ERRORLEVEL%"
-if not "%APP_EXIT_CODE%"=="0" (
-  echo [video-overlay] Electron exited with code %APP_EXIT_CODE%.
-  pause
-)
-exit /b %APP_EXIT_CODE%
+start "" "%ELECTRON%" "%APP_DIR%"
+exit /b 0
